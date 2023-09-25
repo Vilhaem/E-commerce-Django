@@ -5,6 +5,7 @@ from django.utils import timezone
 
 class Product(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="products/",blank=True,null=True)
     name = models.CharField(max_length=120)
     handle = models.SlugField(unique=True)
     price = models.DecimalField(max_digits=10,decimal_places=2,default=9.99)
@@ -20,3 +21,7 @@ class Product(models.Model):
             self.stripe_price = int(self.price * 100)
             self.price_changed_timestamp = timezone.now()
         super().save(*args, **kwargs)
+        
+    def get_absolute_url(self) -> str:
+        return f"/products/{self.handle}/"
+    
